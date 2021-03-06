@@ -13,6 +13,9 @@ spring:
       ddl-auto: update
   redis:
     host: 'localhost'
+  rabbitmq:
+    host: localhost
+    password: guest
   data:
     mongodb:
       username: 'root'
@@ -27,7 +30,9 @@ app:
   security:
     jwt: ''
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
   datasource:
     url: jdbc:mariadb://localhost:3306/staging
     username: root
@@ -41,6 +46,9 @@ spring:
       ddl-auto: update
   redis:
     host: 'localhost'
+  rabbitmq:
+    host: localhost
+    password: guest
   data:
     mongodb:
       username: 'root'

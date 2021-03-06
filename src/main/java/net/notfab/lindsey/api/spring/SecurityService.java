@@ -6,7 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import net.notfab.lindsey.api.models.User;
+import net.notfab.lindsey.api.models.DiscordUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class SecurityService {
         this.objectMapper = objectMapper;
     }
 
-    public String generateToken(User user) {
+    public String generateToken(DiscordUser user) {
         Claims claims;
         try {
             claims = Jwts.claims()

@@ -8,7 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
 import net.notfab.lindsey.api.advice.RestfulErrorAdviser;
-import net.notfab.lindsey.api.models.User;
+import net.notfab.lindsey.api.models.DiscordUser;
 import net.notfab.lindsey.api.spring.SecurityService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -67,9 +67,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 .getBody();
         if (claims != null) {
             String subject = claims.getSubject();
-            User user;
+            DiscordUser user;
             try {
-                user = this.objectMapper.readValue(subject, User.class);
+                user = this.objectMapper.readValue(subject, DiscordUser.class);
             } catch (JsonProcessingException e) {
                 throw new BadCredentialsException("Failed to authenticate");
             }

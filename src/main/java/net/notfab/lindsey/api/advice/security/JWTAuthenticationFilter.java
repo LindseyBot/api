@@ -1,7 +1,7 @@
 package net.notfab.lindsey.api.advice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.notfab.lindsey.api.models.User;
+import net.notfab.lindsey.api.models.DiscordUser;
 import net.notfab.lindsey.api.spring.SecurityService;
 import org.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +41,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
                                             Authentication auth) {
-        User user = (User) auth.getPrincipal();
+        DiscordUser user = (DiscordUser) auth.getPrincipal();
         String token = this.securityService.generateToken(user);
         try {
             JSONObject object = new JSONObject();
