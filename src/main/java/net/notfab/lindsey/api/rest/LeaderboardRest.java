@@ -53,18 +53,18 @@ public class LeaderboardRest {
                 .orElse(new UserPrivacy());
         if (privacy.isAnonymousInLeaderboards()) {
             user.setUsername("Anonymous");
-            user.setDiscriminator(0);
+            user.setDiscrim("0000");
         } else {
             UserProfile profile = this.userProfileRepository.findById(lb.getUser())
                     .orElse(new UserProfile());
             if (profile.getName() == null) {
                 user.setUsername("Ghost");
-                user.setDiscriminator(0);
+                user.setDiscrim("0000");
             } else {
                 String name = profile.getName().split("#")[0];
-                int discriminator = Integer.parseInt(profile.getName().split("#")[1]);
+                String discrim = profile.getName().split("#")[1];
                 user.setUsername(name);
-                user.setDiscriminator(discriminator);
+                user.setDiscrim(discrim);
             }
         }
         return entry;

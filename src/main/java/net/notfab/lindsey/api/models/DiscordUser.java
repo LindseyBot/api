@@ -9,6 +9,6 @@ public class DiscordUser {
 
     private Long id;
     private String username;
-    private Integer discriminator;
+    private String discrim;
 
 }

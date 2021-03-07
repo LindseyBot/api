@@ -48,7 +48,7 @@ public class JWTAuthProvider implements AuthenticationProvider {
         String token = authentication.getName();
         DiscordUser user = this.getFromDiscord(token);
         // Update panel access
-        this.updateAccess(user.getId(), this.findGuilds(token));
+        this.updateAccess(user, this.findGuilds(token));
         return new UsernamePasswordAuthenticationToken(user, token, new ArrayList<>());
     }
 
@@ -75,13 +75,13 @@ public class JWTAuthProvider implements AuthenticationProvider {
         }
     }
 
-    private void updateAccess(long userId, List<DiscordGuild> guilds) {
+    private void updateAccess(DiscordUser user, List<DiscordGuild> guilds) {
         guilds.parallelStream().forEach(guild -> {
             AccessLevel level = this.getAccessLevel(guild);
             if (level == null) {
                 return;
             }
-            Optional<PanelAccess> oAccess = this.repository.findByUserAndGuild(userId, guild.getId());
+            Optional<PanelAccess> oAccess = this.repository.findByUserAndGuild(user.getId(), guild.getId());
             PanelAccess access;
             if (oAccess.isPresent()) {
                 access = oAccess.get();
@@ -89,8 +89,9 @@ public class JWTAuthProvider implements AuthenticationProvider {
                 access = new PanelAccess();
                 access.setId(this.snowflake.next());
                 access.setGuild(guild.getId());
-                access.setUser(userId);
+                access.setUser(user.getId());
             }
+            access.setUsername(user.getUsername() + "#" + user.getDiscrim());
             access.setLevel(level);
             this.repository.save(access);
         });

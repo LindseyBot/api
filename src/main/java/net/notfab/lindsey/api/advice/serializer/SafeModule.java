@@ -1,6 +1,7 @@
 package net.notfab.lindsey.api.advice.serializer;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import net.notfab.lindsey.shared.entities.items.Background;
 import net.notfab.lindsey.shared.entities.items.Badge;
 import net.notfab.lindsey.shared.entities.items.Item;
@@ -19,6 +20,8 @@ public class SafeModule extends SimpleModule {
         this.addSerializer(Background.class, new BackgroundSerializer());
         this.addSerializer(Badge.class, new BadgeSerializer());
         this.addSerializer(ItemReference.class, new ItemReferenceSerializer());
+        this.addSerializer(Long.class, new ToStringSerializer());
+        this.addSerializer(long.class, new ToStringSerializer());
     }
 
 }
