@@ -1,16 +1,20 @@
 package net.notfab.lindsey.api.services;
 
+import net.notfab.lindsey.api.models.DiscordUser;
 import net.notfab.lindsey.api.models.ReferenceRequest;
 import net.notfab.lindsey.shared.entities.panel.AccessLevel;
 import net.notfab.lindsey.shared.entities.panel.PanelAccess;
 import net.notfab.lindsey.shared.repositories.sql.PanelAccessRepository;
+import net.notfab.lindsey.shared.rpc.FGuild;
 import net.notfab.lindsey.shared.rpc.FMember;
+import net.notfab.lindsey.shared.rpc.services.RemoteGuilds;
 import net.notfab.lindsey.shared.services.ReferencingService;
 import net.notfab.lindsey.shared.utils.Snowflake;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PanelAccessService {
@@ -18,12 +22,15 @@ public class PanelAccessService {
     private final Snowflake snowflake;
     private final PanelAccessRepository repository;
     private final ReferencingService referencingService;
+    private final RemoteGuilds remoteGuilds;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public PanelAccessService(Snowflake snowflake, PanelAccessRepository repository,
-                              ReferencingService referencingService) {
+                              ReferencingService referencingService, RemoteGuilds remoteGuilds) {
         this.snowflake = snowflake;
         this.repository = repository;
         this.referencingService = referencingService;
+        this.remoteGuilds = remoteGuilds;
     }
 
     public List<PanelAccess> getAllAccesses(long guild) {
@@ -50,6 +57,13 @@ public class PanelAccessService {
         access.setUser(member.getId());
         access.setUsername(member.getName() + "#" + member.getDiscrim());
         return this.repository.save(access);
+    }
+
+    public List<FGuild> getAllForUser(DiscordUser user) {
+        List<Long> ids = this.repository.findAllByUser(user.getId()).stream()
+                .map(PanelAccess::getGuild)
+                .collect(Collectors.toList());
+        return this.remoteGuilds.getDetails(ids, user.getId());
     }
 
 }

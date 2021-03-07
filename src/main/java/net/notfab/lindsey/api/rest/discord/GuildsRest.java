@@ -27,6 +27,11 @@ public class GuildsRest {
         this.guilds = guilds;
     }
 
+    @GetMapping
+    public List<FGuild> findAll() {
+        return this.panelAccessService.getAllForUser(this.sessions.getUser());
+    }
+
     @GetMapping("{id}")
     public FGuild getGuild(@PathVariable("id") long id) {
         return this.guilds.getGuild(id, sessions.getUser().getId());
