@@ -91,7 +91,7 @@ public class JWTAuthProvider implements AuthenticationProvider {
                 access.setGuild(guild.getId());
                 access.setUser(user.getId());
             }
-            access.setUsername(user.getUsername() + "#" + user.getDiscrim());
+            access.setUsername(user.getUsername() + "#" + user.getDiscriminator());
             access.setLevel(level);
             this.repository.save(access);
         });
