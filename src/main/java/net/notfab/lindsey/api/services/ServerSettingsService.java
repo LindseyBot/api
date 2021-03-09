@@ -2,8 +2,10 @@ package net.notfab.lindsey.api.services;
 
 import net.notfab.lindsey.shared.entities.profile.ServerProfile;
 import net.notfab.lindsey.shared.entities.profile.server.MusicSettings;
+import net.notfab.lindsey.shared.entities.profile.server.StarboardSettings;
 import net.notfab.lindsey.shared.repositories.sql.ServerProfileRepository;
 import net.notfab.lindsey.shared.repositories.sql.server.MusicSettingsRepository;
+import net.notfab.lindsey.shared.repositories.sql.server.StarboardSettingsRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,10 +13,14 @@ public class ServerSettingsService {
 
     private final ServerProfileRepository settingsRepository;
     private final MusicSettingsRepository musicRepository;
+    private final StarboardSettingsRepository starboardRepository;
 
-    public ServerSettingsService(ServerProfileRepository settingsRepository, MusicSettingsRepository musicRepository) {
+    public ServerSettingsService(ServerProfileRepository settingsRepository,
+                                 MusicSettingsRepository musicRepository,
+                                 StarboardSettingsRepository starboardRepository) {
         this.settingsRepository = settingsRepository;
         this.musicRepository = musicRepository;
+        this.starboardRepository = starboardRepository;
     }
 
     public ServerProfile fetchSettings(long guild) {
@@ -51,6 +57,23 @@ public class ServerSettingsService {
         request.setPosition(old.getPosition());
         request.setGuild(guild);
         return this.musicRepository.save(request);
+    }
+
+    public StarboardSettings fetchStarboard(long guild) {
+        return this.starboardRepository.findById(guild).orElse(new StarboardSettings(guild));
+    }
+
+    public StarboardSettings putStarboard(long guild, StarboardSettings request) {
+        if (request.getChannel() == null) {
+            request.setEnabled(false);
+        } else if (!request.isEnabled()) {
+            request.setChannel(null);
+        }
+        if (request.getMinStars() < 1 || request.getMinStars() > 10) {
+            throw new IllegalArgumentException("Invalid minimum star count");
+        }
+        request.setGuild(guild);
+        return this.starboardRepository.save(request);
     }
 
 }
