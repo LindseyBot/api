@@ -39,17 +39,11 @@ public class GuildsRest {
 
     @GetMapping("{id}/access")
     public List<PanelAccess> getAccess(@PathVariable("id") long id) {
-        if (!this.sessions.hasAccess(id)) {
-            throw new AccessDeniedException("No permission");
-        }
         return this.panelAccessService.getAllAccesses(id);
     }
 
     @DeleteMapping("{guild}/access/{id}")
     public void deleteAccess(@PathVariable("guild") long guild, @PathVariable("id") long id) {
-        if (!this.sessions.hasAccess(guild)) {
-            throw new AccessDeniedException("No permission");
-        }
         AccessLevel level = this.sessions.getAccessLevel(guild);
         if (level != AccessLevel.OWNER) {
             throw new AccessDeniedException("No permission");
@@ -59,9 +53,6 @@ public class GuildsRest {
 
     @PostMapping("{id}/access")
     public PanelAccess createAccess(@PathVariable("id") long guild, @RequestBody ReferenceRequest request) {
-        if (!this.sessions.hasAccess(guild)) {
-            throw new AccessDeniedException("No permission");
-        }
         AccessLevel level = this.sessions.getAccessLevel(guild);
         if (level != AccessLevel.OWNER) {
             throw new AccessDeniedException("No permission");

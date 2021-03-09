@@ -1,9 +1,7 @@
 package net.notfab.lindsey.api.spring;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.notfab.lindsey.api.advice.security.JWTAuthProvider;
-import net.notfab.lindsey.api.advice.security.JWTAuthenticationFilter;
-import net.notfab.lindsey.api.advice.security.JWTAuthorizationFilter;
+import net.notfab.lindsey.api.advice.security.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,11 +21,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JWTAuthProvider authProvider;
     private final SecurityService securityService;
     private final ObjectMapper objectMapper;
+    private final SessionProvider sessions;
 
-    public SecurityConfig(JWTAuthProvider authProvider, SecurityService securityService, ObjectMapper objectMapper) {
+    public SecurityConfig(JWTAuthProvider authProvider, SecurityService securityService,
+                          ObjectMapper objectMapper, SessionProvider sessions) {
         this.authProvider = authProvider;
         this.securityService = securityService;
         this.objectMapper = objectMapper;
+        this.sessions = sessions;
     }
 
     @Override
@@ -38,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), this.securityService))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager(), this.securityService, this.objectMapper))
+                .addFilterAfter(new ServerAuthorizationFilter(this.sessions), FilterSecurityInterceptor.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
