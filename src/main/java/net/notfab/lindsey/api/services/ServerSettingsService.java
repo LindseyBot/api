@@ -1,23 +1,27 @@
 package net.notfab.lindsey.api.services;
 
 import net.notfab.lindsey.shared.entities.profile.ServerProfile;
+import net.notfab.lindsey.shared.entities.profile.server.MusicSettings;
 import net.notfab.lindsey.shared.repositories.sql.ServerProfileRepository;
+import net.notfab.lindsey.shared.repositories.sql.server.MusicSettingsRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ServerSettingsService {
 
-    private final ServerProfileRepository repository;
+    private final ServerProfileRepository settingsRepository;
+    private final MusicSettingsRepository musicRepository;
 
-    public ServerSettingsService(ServerProfileRepository repository) {
-        this.repository = repository;
+    public ServerSettingsService(ServerProfileRepository settingsRepository, MusicSettingsRepository musicRepository) {
+        this.settingsRepository = settingsRepository;
+        this.musicRepository = musicRepository;
     }
 
-    public ServerProfile fetch(long guild) {
-        return this.repository.findById(guild).orElse(new ServerProfile(guild));
+    public ServerProfile fetchSettings(long guild) {
+        return this.settingsRepository.findById(guild).orElse(new ServerProfile(guild));
     }
 
-    public ServerProfile put(long guild, ServerProfile request) {
+    public ServerProfile putSettings(long guild, ServerProfile request) {
         if (request.getLanguage() == null) {
             throw new IllegalArgumentException("Invalid language");
         }
@@ -30,7 +34,23 @@ public class ServerSettingsService {
             }
         }
         request.setGuild(guild);
-        return this.repository.save(request);
+        return this.settingsRepository.save(request);
+    }
+
+    public MusicSettings fetchMusic(long guild) {
+        return this.musicRepository.findById(guild).orElse(new MusicSettings(guild));
+    }
+
+    public MusicSettings putMusic(long guild, MusicSettings request) {
+        if (request.getLogChannel() == null) {
+            request.setLogTracks(false);
+        } else if (!request.isLogTracks()) {
+            request.setLogChannel(null);
+        }
+        MusicSettings old = this.fetchMusic(guild);
+        request.setPosition(old.getPosition());
+        request.setGuild(guild);
+        return this.musicRepository.save(request);
     }
 
 }
