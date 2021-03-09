@@ -1,6 +1,7 @@
 package net.notfab.lindsey.api.rest;
 
 import net.notfab.lindsey.api.advice.paging.KeySetPaginator;
+import net.notfab.lindsey.api.advice.paging.PagedResponse;
 import net.notfab.lindsey.api.models.DiscordUser;
 import net.notfab.lindsey.api.models.LeaderboardEntry;
 import net.notfab.lindsey.api.repositories.sql.LeaderboardRepository;
@@ -10,12 +11,12 @@ import net.notfab.lindsey.shared.entities.profile.user.UserPrivacy;
 import net.notfab.lindsey.shared.enums.LeaderboardType;
 import net.notfab.lindsey.shared.repositories.sql.UserPrivacyRepository;
 import net.notfab.lindsey.shared.repositories.sql.UserProfileRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,13 +36,20 @@ public class LeaderboardRest {
     }
 
     @GetMapping
-    public List<LeaderboardEntry> findAll(KeySetPaginator paginator, @RequestParam("type") LeaderboardType type) {
-        return repository.findAllByIdGreaterThanAndTypeOrderByCountDesc(paginator.getLast(), type)
-                .stream().map(this::toEntry).collect(Collectors.toList());
+    public PagedResponse<LeaderboardEntry> findAll(KeySetPaginator paginator, @RequestParam("type") LeaderboardType type) {
+        Page<Leaderboard> page = repository
+                .findAllByIdGreaterThanAndTypeOrderByCountDesc(paginator.getLast(), type, paginator.toPageable());
+        PagedResponse<LeaderboardEntry> response = new PagedResponse<>();
+        response.setLimit(page.getPageable().getPageSize());
+        response.setPage(page.getNumber());
+        response.setLast(page.isLast());
+        response.setItems(page.stream().map(this::toEntry).collect(Collectors.toList()));
+        return response;
     }
 
     private LeaderboardEntry toEntry(Leaderboard lb) {
         LeaderboardEntry entry = new LeaderboardEntry();
+        entry.setId(lb.getId());
         entry.setCount(lb.getCount());
         entry.setType(lb.getType());
 

@@ -1,11 +1,13 @@
 package net.notfab.lindsey.api.advice.paging;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class PagedResponse<T> {
 
     private int page;

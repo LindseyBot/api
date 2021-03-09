@@ -6,6 +6,7 @@ import net.notfab.lindsey.shared.enums.LeaderboardType;
 @Data
 public class LeaderboardEntry {
 
+    private long id;
     private DiscordUser user;
 
     private double count;

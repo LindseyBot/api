@@ -11,6 +11,7 @@ import java.util.Optional;
 @Getter
 public class KeySetPaginator {
 
+    @Setter
     private long last;
     private int limit = 100;
 
