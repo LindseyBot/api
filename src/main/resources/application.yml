@@ -16,13 +16,6 @@ spring:
   rabbitmq:
     host: localhost
     password: guest
-  data:
-    mongodb:
-      username: 'root'
-      password: 'root'
-      host: 'localhost'
-      authentication-database: admin
-      database: test
 
 ---
 
@@ -49,10 +42,3 @@ spring:
   rabbitmq:
     host: localhost
     password: guest
-  data:
-    mongodb:
-      username: 'root'
-      password: 'root'
-      host: 'localhost'
-      authentication-database: admin
-      database: lindsey
