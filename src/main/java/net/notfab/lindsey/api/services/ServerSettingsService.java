@@ -1,8 +1,10 @@
 package net.notfab.lindsey.api.services;
 
 import net.notfab.lindsey.shared.entities.profile.ServerProfile;
+import net.notfab.lindsey.shared.entities.profile.server.BetterEmbedsSettings;
 import net.notfab.lindsey.shared.entities.profile.server.MusicSettings;
 import net.notfab.lindsey.shared.entities.profile.server.StarboardSettings;
+import net.notfab.lindsey.shared.repositories.sql.BetterEmbedSettingsRepository;
 import net.notfab.lindsey.shared.repositories.sql.ServerProfileRepository;
 import net.notfab.lindsey.shared.repositories.sql.server.MusicSettingsRepository;
 import net.notfab.lindsey.shared.repositories.sql.server.StarboardSettingsRepository;
@@ -14,13 +16,16 @@ public class ServerSettingsService {
     private final ServerProfileRepository settingsRepository;
     private final MusicSettingsRepository musicRepository;
     private final StarboardSettingsRepository starboardRepository;
+    private final BetterEmbedSettingsRepository embedsRepository;
 
     public ServerSettingsService(ServerProfileRepository settingsRepository,
                                  MusicSettingsRepository musicRepository,
-                                 StarboardSettingsRepository starboardRepository) {
+                                 StarboardSettingsRepository starboardRepository,
+                                 BetterEmbedSettingsRepository embedsRepository) {
         this.settingsRepository = settingsRepository;
         this.musicRepository = musicRepository;
         this.starboardRepository = starboardRepository;
+        this.embedsRepository = embedsRepository;
     }
 
     public ServerProfile fetchSettings(long guild) {
@@ -74,6 +79,15 @@ public class ServerSettingsService {
         }
         request.setGuild(guild);
         return this.starboardRepository.save(request);
+    }
+
+    public BetterEmbedsSettings fetchEmbeds(long guild) {
+        return this.embedsRepository.findById(guild).orElse(new BetterEmbedsSettings(guild));
+    }
+
+    public BetterEmbedsSettings putEmbeds(long guild, BetterEmbedsSettings request) {
+        request.setGuild(guild);
+        return this.embedsRepository.save(request);
     }
 
 }

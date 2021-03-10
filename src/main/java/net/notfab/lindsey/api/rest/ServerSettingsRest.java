@@ -2,6 +2,7 @@ package net.notfab.lindsey.api.rest;
 
 import net.notfab.lindsey.api.services.ServerSettingsService;
 import net.notfab.lindsey.shared.entities.profile.ServerProfile;
+import net.notfab.lindsey.shared.entities.profile.server.BetterEmbedsSettings;
 import net.notfab.lindsey.shared.entities.profile.server.MusicSettings;
 import net.notfab.lindsey.shared.entities.profile.server.StarboardSettings;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,16 @@ public class ServerSettingsRest {
     @PutMapping("starboard")
     public StarboardSettings putStarboard(@PathVariable long guild, @RequestBody StarboardSettings request) {
         return this.service.putStarboard(guild, request);
+    }
+
+    @GetMapping("embeds")
+    public BetterEmbedsSettings fetchEmbeds(@PathVariable long guild) {
+        return this.service.fetchEmbeds(guild);
+    }
+
+    @PutMapping("embeds")
+    public BetterEmbedsSettings putEmbeds(@PathVariable long guild, @RequestBody BetterEmbedsSettings request) {
+        return this.service.putEmbeds(guild, request);
     }
 
 }
