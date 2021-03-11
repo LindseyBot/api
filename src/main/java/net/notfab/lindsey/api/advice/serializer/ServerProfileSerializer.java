@@ -17,6 +17,7 @@ public class ServerProfileSerializer extends JsonSerializer<ServerProfile> {
         jsonGenerator.writeStringField("prefix", profile.getPrefix());
         jsonGenerator.writeStringField("language", profile.getLanguage().name());
         jsonGenerator.writeBooleanField("keepRolesEnabled", profile.isKeepRolesEnabled());
+        jsonGenerator.writeBooleanField("modLogEnabled", profile.isModLogEnabled());
         jsonGenerator.writeEndObject();
     }
 
