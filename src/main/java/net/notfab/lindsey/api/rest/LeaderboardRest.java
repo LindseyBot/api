@@ -38,7 +38,7 @@ public class LeaderboardRest {
     @GetMapping
     public PagedResponse<LeaderboardEntry> findAll(KeySetPaginator paginator, @RequestParam("type") LeaderboardType type) {
         Page<Leaderboard> page = repository
-                .findAllByIdGreaterThanAndTypeOrderByCountDesc(paginator.getLast(), type, paginator.toPageable());
+                .findAllByIdGreaterThanAndTypeOrderByCountDesc(paginator.getCursor(), type, paginator.toPageable());
         PagedResponse<LeaderboardEntry> response = new PagedResponse<>();
         response.setLimit(page.getPageable().getPageSize());
         response.setPage(page.getNumber());

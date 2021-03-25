@@ -23,4 +23,13 @@ public class PagedResponse<T> {
         this.items = page.getContent();
     }
 
+    public static <T> PagedResponse<T> ofUnpaged(List<T> items) {
+        PagedResponse<T> response = new PagedResponse<>();
+        response.setItems(items);
+        response.setPage(0);
+        response.setLast(true);
+        response.setLimit(999);
+        return response;
+    }
+
 }

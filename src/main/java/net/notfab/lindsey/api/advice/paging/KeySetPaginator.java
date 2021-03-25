@@ -12,7 +12,7 @@ import java.util.Optional;
 public class KeySetPaginator {
 
     @Setter
-    private long last;
+    private long cursor;
     private int limit = 100;
 
     @Setter
