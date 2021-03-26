@@ -1,7 +1,7 @@
 package net.notfab.lindsey.api.rest;
 
-import net.notfab.lindsey.api.advice.paging.KeySetPaginator;
 import net.notfab.lindsey.api.advice.paging.PagedResponse;
+import net.notfab.lindsey.api.advice.paging.Paginator;
 import net.notfab.lindsey.api.models.DiscordUser;
 import net.notfab.lindsey.api.models.LeaderboardEntry;
 import net.notfab.lindsey.api.repositories.sql.LeaderboardRepository;
@@ -36,9 +36,8 @@ public class LeaderboardRest {
     }
 
     @GetMapping
-    public PagedResponse<LeaderboardEntry> findAll(KeySetPaginator paginator, @RequestParam("type") LeaderboardType type) {
-        Page<Leaderboard> page = repository
-                .findAllByIdGreaterThanAndTypeOrderByCountDesc(paginator.getCursor(), type, paginator.toPageable());
+    public PagedResponse<LeaderboardEntry> findAll(Paginator paginator, @RequestParam("type") LeaderboardType type) {
+        Page<Leaderboard> page = repository.findAllByTypeOrderByCountDesc(type, paginator.toPageable());
         PagedResponse<LeaderboardEntry> response = new PagedResponse<>();
         response.setLimit(page.getPageable().getPageSize());
         response.setPage(page.getNumber());

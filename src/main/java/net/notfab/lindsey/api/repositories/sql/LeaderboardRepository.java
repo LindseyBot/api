@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LeaderboardRepository extends JpaRepository<Leaderboard, Long> {
 
-    Page<Leaderboard> findAllByIdGreaterThanAndTypeOrderByCountDesc(long lastId, LeaderboardType type, Pageable pageable);
+    Page<Leaderboard> findAllByTypeOrderByCountDesc(LeaderboardType type, Pageable pageable);
 
 }
