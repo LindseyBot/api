@@ -32,7 +32,7 @@ public class RabbitConfig {
     public RabbitTemplate rabbitTemplate(ConnectionFactory factory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(factory);
         rabbitTemplate.setExchange(EXCHANGE);
-        rabbitTemplate.setReplyTimeout(5000);
+        rabbitTemplate.setReplyTimeout(30000);
         rabbitTemplate.setUserCorrelationId(true);
         rabbitTemplate.setRoutingKey(ROUT_KEY);
         return rabbitTemplate;
