@@ -35,14 +35,10 @@ public class ServerSettingsService {
     public ServerProfile fetchSettings(long guild) {
         ServerProfile profile = this.settingsRepository.findById(guild)
                 .orElse(new ServerProfile(guild));
-        String ignoredKey = "Lindsey:Ignored:" + guild;
+        String ignoredKey = "Lindsey:Ignore:" + guild;
         Boolean hasKey = redis.hasKey(ignoredKey);
         if (hasKey != null && hasKey) {
-            Long size = redis.opsForList().size(ignoredKey);
-            if (size == null) {
-                return profile;
-            }
-            profile.setIgnoredChannels(redis.opsForList().range(ignoredKey, 0, size));
+            profile.setIgnoredChannels(redis.opsForSet().members(ignoredKey));
         }
         return profile;
     }
@@ -60,10 +56,10 @@ public class ServerSettingsService {
             }
         }
         if (request.getIgnoredChannels() != null) {
-            String ignoredKey = "Lindsey:Ignored:" + guild;
+            String ignoredKey = "Lindsey:Ignore:" + guild;
             redis.delete(ignoredKey);
             if (!request.getIgnoredChannels().isEmpty()) {
-                redis.opsForList().rightPushAll(ignoredKey, request.getIgnoredChannels());
+                redis.opsForSet().add(ignoredKey, request.getIgnoredChannels().toArray(new String[0]));
             }
         }
         request.setGuild(guild);
