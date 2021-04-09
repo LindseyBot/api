@@ -8,6 +8,7 @@ import net.notfab.lindsey.shared.repositories.sql.BetterEmbedSettingsRepository;
 import net.notfab.lindsey.shared.repositories.sql.ServerProfileRepository;
 import net.notfab.lindsey.shared.repositories.sql.server.MusicSettingsRepository;
 import net.notfab.lindsey.shared.repositories.sql.server.StarboardSettingsRepository;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,19 +18,33 @@ public class ServerSettingsService {
     private final MusicSettingsRepository musicRepository;
     private final StarboardSettingsRepository starboardRepository;
     private final BetterEmbedSettingsRepository embedsRepository;
+    private final StringRedisTemplate redis;
 
     public ServerSettingsService(ServerProfileRepository settingsRepository,
                                  MusicSettingsRepository musicRepository,
                                  StarboardSettingsRepository starboardRepository,
-                                 BetterEmbedSettingsRepository embedsRepository) {
+                                 BetterEmbedSettingsRepository embedsRepository,
+                                 StringRedisTemplate redis) {
         this.settingsRepository = settingsRepository;
         this.musicRepository = musicRepository;
         this.starboardRepository = starboardRepository;
         this.embedsRepository = embedsRepository;
+        this.redis = redis;
     }
 
     public ServerProfile fetchSettings(long guild) {
-        return this.settingsRepository.findById(guild).orElse(new ServerProfile(guild));
+        ServerProfile profile = this.settingsRepository.findById(guild)
+                .orElse(new ServerProfile(guild));
+        String ignoredKey = "Lindsey:Ignored:" + guild;
+        Boolean hasKey = redis.hasKey(ignoredKey);
+        if (hasKey != null && hasKey) {
+            Long size = redis.opsForList().size(ignoredKey);
+            if (size == null) {
+                return profile;
+            }
+            profile.setIgnoredChannels(redis.opsForList().range(ignoredKey, 0, size));
+        }
+        return profile;
     }
 
     public ServerProfile putSettings(long guild, ServerProfile request) {
@@ -44,8 +59,17 @@ public class ServerSettingsService {
                 request.setPrefix(null);
             }
         }
+        if (request.getIgnoredChannels() != null) {
+            String ignoredKey = "Lindsey:Ignored:" + guild;
+            redis.delete(ignoredKey);
+            if (!request.getIgnoredChannels().isEmpty()) {
+                redis.opsForList().rightPushAll(ignoredKey, request.getIgnoredChannels());
+            }
+        }
         request.setGuild(guild);
-        return this.settingsRepository.save(request);
+        ServerProfile response = this.settingsRepository.save(request);
+        response.setIgnoredChannels(request.getIgnoredChannels());
+        return response;
     }
 
     public MusicSettings fetchMusic(long guild) {
