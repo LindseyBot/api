@@ -6,7 +6,7 @@ import net.notfab.lindsey.api.services.PanelAccessService;
 import net.notfab.lindsey.shared.entities.panel.AccessLevel;
 import net.notfab.lindsey.shared.entities.panel.PanelAccess;
 import net.notfab.lindsey.shared.rpc.FGuild;
-import net.notfab.lindsey.shared.rpc.services.RemoteGuilds;
+import net.notfab.lindsey.shared.rpc.services.RemoteGuildsService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +17,11 @@ import java.util.List;
 public class GuildsRest {
 
     private final SessionProvider sessions;
-    private final RemoteGuilds guilds;
+    private final RemoteGuildsService guilds;
     private final PanelAccessService panelAccessService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public GuildsRest(SessionProvider sessions, RemoteGuilds guilds, PanelAccessService panelAccessService) {
+    public GuildsRest(SessionProvider sessions, RemoteGuildsService guilds, PanelAccessService panelAccessService) {
         this.panelAccessService = panelAccessService;
         this.sessions = sessions;
         this.guilds = guilds;

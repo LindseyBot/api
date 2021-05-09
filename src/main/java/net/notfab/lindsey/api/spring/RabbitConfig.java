@@ -1,50 +1,49 @@
 package net.notfab.lindsey.api.spring;
 
-import net.notfab.lindsey.shared.rpc.CustomAmqpProxyFactory;
-import net.notfab.lindsey.shared.rpc.services.RemoteGuilds;
-import org.springframework.amqp.core.Exchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import net.lindseybot.utils.RabbitUtils;
+import net.notfab.lindsey.shared.rpc.services.RemoteGuildsService;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.remoting.client.AmqpProxyFactoryBean;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class RabbitConfig {
 
-    public static final String EXCHANGE = "RPC";
-    public static final String ROUT_KEY = "discord.key";
-    public static final String QUEUE_NAME = "Discord";
-
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE_NAME);
+    @Primary
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(new Jackson2JsonMessageConverter());
+        template.setReplyTimeout(TimeUnit.SECONDS.toMillis(15));
+        return template;
     }
 
-    @Bean
-    public Exchange exchange() {
-        return new TopicExchange(EXCHANGE);
+    // -- Spring AMQP Remoting
+
+    @Bean(name = "rpc")
+    public RabbitTemplate rpcTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(RabbitUtils.jacksonConverter());
+        template.setReplyTimeout(TimeUnit.SECONDS.toMillis(15));
+        return template;
     }
 
+    /**
+     * Provides the connection to the Remote-Guilds service, implemented on the gateway.
+     *
+     * @param template RabbitMQ Template.
+     * @return Proxy for the Service.
+     */
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory factory) {
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(factory);
-        rabbitTemplate.setExchange(EXCHANGE);
-        rabbitTemplate.setReplyTimeout(30000);
-        rabbitTemplate.setUserCorrelationId(true);
-        rabbitTemplate.setRoutingKey(ROUT_KEY);
-        return rabbitTemplate;
-    }
-
-    @Bean
-    public AmqpProxyFactoryBean amqpProxyFactoryBean(RabbitTemplate rabbitTemplate) {
-        AmqpProxyFactoryBean amqpProxyFactoryBean = new CustomAmqpProxyFactory();
-        amqpProxyFactoryBean.setAmqpTemplate(rabbitTemplate);
-        amqpProxyFactoryBean.setServiceInterface(RemoteGuilds.class);
-        amqpProxyFactoryBean.setRoutingKey(ROUT_KEY);
-        return amqpProxyFactoryBean;
+    public AmqpProxyFactoryBean remoteGuildsService(@Qualifier("rpc") RabbitTemplate template) {
+        return RabbitUtils.createRemoteService(RemoteGuildsService.class, template);
     }
 
 }

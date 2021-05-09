@@ -7,7 +7,7 @@ import net.notfab.lindsey.shared.entities.panel.PanelAccess;
 import net.notfab.lindsey.shared.repositories.sql.PanelAccessRepository;
 import net.notfab.lindsey.shared.rpc.FGuild;
 import net.notfab.lindsey.shared.rpc.FMember;
-import net.notfab.lindsey.shared.rpc.services.RemoteGuilds;
+import net.notfab.lindsey.shared.rpc.services.RemoteGuildsService;
 import net.notfab.lindsey.shared.services.ReferencingService;
 import net.notfab.lindsey.shared.utils.Snowflake;
 import org.springframework.stereotype.Service;
@@ -22,11 +22,11 @@ public class PanelAccessService {
     private final Snowflake snowflake;
     private final PanelAccessRepository repository;
     private final ReferencingService referencingService;
-    private final RemoteGuilds remoteGuilds;
+    private final RemoteGuildsService remoteGuilds;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public PanelAccessService(Snowflake snowflake, PanelAccessRepository repository,
-                              ReferencingService referencingService, RemoteGuilds remoteGuilds) {
+                              ReferencingService referencingService, RemoteGuildsService remoteGuilds) {
         this.snowflake = snowflake;
         this.repository = repository;
         this.referencingService = referencingService;
