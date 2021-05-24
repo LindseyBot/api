@@ -1,5 +1,8 @@
 package net.notfab.lindsey.api.rest;
 
+import net.notfab.lindsey.api.advice.paging.PagedResponse;
+import net.notfab.lindsey.api.advice.paging.Paginator;
+import net.notfab.lindsey.api.retrofit.AuditMessage;
 import net.notfab.lindsey.api.services.ServerSettingsService;
 import net.notfab.lindsey.shared.entities.profile.ServerProfile;
 import net.notfab.lindsey.shared.entities.profile.server.BetterEmbedsSettings;
@@ -55,6 +58,11 @@ public class ServerSettingsRest {
     @PutMapping("embeds")
     public BetterEmbedsSettings putEmbeds(@PathVariable long guild, @RequestBody BetterEmbedsSettings request) {
         return this.service.putEmbeds(guild, request);
+    }
+
+    @GetMapping("logs")
+    public PagedResponse<AuditMessage> fetchLogs(@PathVariable long guild, Paginator paginator) {
+        return this.service.fetchLogs(guild, paginator);
     }
 
 }

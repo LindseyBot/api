@@ -4,6 +4,16 @@
       "name": "app.security.jwt",
       "type": "java.lang.String",
       "description": "JWT signing token, 64-chars."
+    },
+    {
+      "name": "app.logs.url",
+      "type": "java.lang.String",
+      "description": "Host for graylog service."
+    },
+    {
+      "name": "app.logs.token",
+      "type": "java.lang.String",
+      "description": "GrayLog authentication token."
     }
   ]
 }

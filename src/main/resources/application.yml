@@ -1,6 +1,9 @@
 app:
   security:
     jwt: ''
+  logs:
+    url: 'http://localhost:9000/'
+    token: 'admin'
 spring:
   datasource:
     url: jdbc:h2:mem:lindsey
@@ -9,32 +12,6 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: update
-  redis:
-    host: 'localhost'
-  rabbitmq:
-    host: localhost
-    password: guest
-
----
-
-app:
-  security:
-    jwt: ''
-spring:
-  config:
-    activate:
-      on-profile: prod
-  datasource:
-    url: jdbc:mariadb://localhost:3306/staging
-    username: root
-    password: root
-    driver-class-name: org.mariadb.jdbc.Driver
-    hikari:
-      max-lifetime: 480000
-  jpa:
-    database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
       ddl-auto: update
   redis:

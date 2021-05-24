@@ -1,5 +1,8 @@
 package net.notfab.lindsey.api.services;
 
+import net.notfab.lindsey.api.advice.paging.PagedResponse;
+import net.notfab.lindsey.api.advice.paging.Paginator;
+import net.notfab.lindsey.api.retrofit.AuditMessage;
 import net.notfab.lindsey.shared.entities.profile.ServerProfile;
 import net.notfab.lindsey.shared.entities.profile.server.BetterEmbedsSettings;
 import net.notfab.lindsey.shared.entities.profile.server.MusicSettings;
@@ -19,17 +22,19 @@ public class ServerSettingsService {
     private final StarboardSettingsRepository starboardRepository;
     private final BetterEmbedSettingsRepository embedsRepository;
     private final StringRedisTemplate redis;
+    private final AuditLogService audit;
 
     public ServerSettingsService(ServerProfileRepository settingsRepository,
                                  MusicSettingsRepository musicRepository,
                                  StarboardSettingsRepository starboardRepository,
                                  BetterEmbedSettingsRepository embedsRepository,
-                                 StringRedisTemplate redis) {
+                                 StringRedisTemplate redis, AuditLogService audit) {
         this.settingsRepository = settingsRepository;
         this.musicRepository = musicRepository;
         this.starboardRepository = starboardRepository;
         this.embedsRepository = embedsRepository;
         this.redis = redis;
+        this.audit = audit;
     }
 
     public ServerProfile fetchSettings(long guild) {
@@ -108,6 +113,14 @@ public class ServerSettingsService {
     public BetterEmbedsSettings putEmbeds(long guild, BetterEmbedsSettings request) {
         request.setGuild(guild);
         return this.embedsRepository.save(request);
+    }
+
+    public PagedResponse<AuditMessage> fetchLogs(long guild, Paginator paginator) {
+        PagedResponse<AuditMessage> paged = this.audit.fetchGuild(guild, paginator);
+        if (paged == null) {
+            throw new IllegalStateException("Failed to fetch logs");
+        }
+        return paged;
     }
 
 }
