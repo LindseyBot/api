@@ -64,6 +64,7 @@ public class AuditDeserializer extends JsonDeserializer<AuditMessage> {
         @JsonProperty("channel_name")
         private String channelName;
 
+        @JsonProperty("level")
         private String level;
 
         @JsonProperty("message_id")
