@@ -4,7 +4,7 @@ import net.notfab.lindsey.api.advice.paging.PagedResponse;
 import net.notfab.lindsey.api.advice.paging.Paginator;
 import net.notfab.lindsey.api.advice.security.SessionProvider;
 import net.notfab.lindsey.shared.entities.items.ItemReference;
-import net.notfab.lindsey.shared.repositories.sql.InventoryRepository;
+import net.notfab.lindsey.shared.repositories.sql.items.InventoryRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
