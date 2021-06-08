@@ -15,7 +15,7 @@ public class ItemReferenceSerializer extends JsonSerializer<ItemReference> {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("id", String.valueOf(reference.getId()));
         jsonGenerator.writeStringField("type", reference.getType().name());
-        jsonGenerator.writeStringField("item", String.valueOf(reference.getItemId()));
+        jsonGenerator.writeStringField("item", String.valueOf(reference.getItem().getId()));
         jsonGenerator.writeStringField("owner", String.valueOf(reference.getOwner()));
         jsonGenerator.writeNumberField("count", reference.getCount());
         jsonGenerator.writeEndObject();
