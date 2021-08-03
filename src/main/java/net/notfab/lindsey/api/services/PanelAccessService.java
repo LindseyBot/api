@@ -1,12 +1,12 @@
 package net.notfab.lindsey.api.services;
 
+import net.lindseybot.entities.discord.FGuild;
+import net.lindseybot.entities.discord.FMember;
 import net.notfab.lindsey.api.models.DiscordUser;
 import net.notfab.lindsey.api.models.ReferenceRequest;
 import net.notfab.lindsey.shared.entities.panel.AccessLevel;
 import net.notfab.lindsey.shared.entities.panel.PanelAccess;
 import net.notfab.lindsey.shared.repositories.sql.PanelAccessRepository;
-import net.notfab.lindsey.shared.rpc.FGuild;
-import net.notfab.lindsey.shared.rpc.FMember;
 import net.notfab.lindsey.shared.rpc.services.RemoteGuildsService;
 import net.notfab.lindsey.shared.services.ReferencingService;
 import net.notfab.lindsey.shared.utils.Snowflake;
@@ -43,10 +43,10 @@ public class PanelAccessService {
 
     public PanelAccess create(long guild, ReferenceRequest request) {
         FMember member = this.referencingService.getMember(request.getTicket());
-        if (member == null || member.getGuildId() != guild) {
+        if (member == null) {
             throw new IllegalArgumentException("Invalid ticket");
         }
-        Optional<PanelAccess> old = this.repository.findByUserAndGuild(member.getId(), guild);
+        Optional<PanelAccess> old = this.repository.findByUserAndGuild(member.getUser().getId(), guild);
         if (old.isPresent()) {
             return old.get();
         }
@@ -54,8 +54,8 @@ public class PanelAccessService {
         access.setId(this.snowflake.next());
         access.setLevel(AccessLevel.ADMIN);
         access.setGuild(guild);
-        access.setUser(member.getId());
-        access.setUsername(member.getName() + "#" + member.getDiscrim());
+        access.setUser(member.getUser().getId());
+        access.setUsername(member.getUser().getName() + "#" + member.getUser().getDiscriminator());
         return this.repository.save(access);
     }
 

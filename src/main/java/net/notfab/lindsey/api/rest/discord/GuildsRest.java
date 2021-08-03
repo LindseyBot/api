@@ -1,11 +1,11 @@
 package net.notfab.lindsey.api.rest.discord;
 
+import net.lindseybot.entities.discord.FGuild;
 import net.notfab.lindsey.api.advice.security.SessionProvider;
 import net.notfab.lindsey.api.models.ReferenceRequest;
 import net.notfab.lindsey.api.services.PanelAccessService;
 import net.notfab.lindsey.shared.entities.panel.AccessLevel;
 import net.notfab.lindsey.shared.entities.panel.PanelAccess;
-import net.notfab.lindsey.shared.rpc.FGuild;
 import net.notfab.lindsey.shared.rpc.services.RemoteGuildsService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
