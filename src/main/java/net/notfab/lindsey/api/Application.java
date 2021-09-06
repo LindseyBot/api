@@ -1,9 +1,6 @@
 package net.notfab.lindsey.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.notfab.lindsey.shared.repositories.sql.CuratorRepository;
-import net.notfab.lindsey.shared.repositories.sql.TrackRepository;
-import net.notfab.lindsey.shared.services.PlayListService;
 import net.notfab.lindsey.shared.services.ReferencingService;
 import net.notfab.lindsey.shared.utils.Snowflake;
 import org.springframework.boot.SpringApplication;
@@ -26,11 +23,6 @@ public class Application {
     @Bean
     ReferencingService referencingService(StringRedisTemplate redis, ObjectMapper objectMapper) {
         return new ReferencingService(objectMapper, redis);
-    }
-
-    @Bean
-    public PlayListService playListService(StringRedisTemplate redis, TrackRepository repository, CuratorRepository curators) {
-        return new PlayListService(repository, redis, curators);
     }
 
 }

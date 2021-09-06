@@ -2,8 +2,8 @@ package net.notfab.lindsey.api.rest;
 
 import net.notfab.lindsey.api.advice.paging.PagedResponse;
 import net.notfab.lindsey.api.advice.paging.Paginator;
+import net.notfab.lindsey.api.repositories.sql.ItemRepository;
 import net.notfab.lindsey.shared.entities.items.Item;
-import net.notfab.lindsey.shared.repositories.sql.items.ItemRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

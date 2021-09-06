@@ -2,15 +2,13 @@ package net.notfab.lindsey.api.services;
 
 import net.notfab.lindsey.api.advice.paging.PagedResponse;
 import net.notfab.lindsey.api.advice.paging.Paginator;
+import net.notfab.lindsey.api.repositories.sql.BetterEmbedSettingsRepository;
+import net.notfab.lindsey.api.repositories.sql.ServerProfileRepository;
+import net.notfab.lindsey.api.repositories.sql.StarboardSettingsRepository;
 import net.notfab.lindsey.api.retrofit.AuditMessage;
 import net.notfab.lindsey.shared.entities.profile.ServerProfile;
 import net.notfab.lindsey.shared.entities.profile.server.BetterEmbedsSettings;
-import net.notfab.lindsey.shared.entities.profile.server.MusicSettings;
 import net.notfab.lindsey.shared.entities.profile.server.StarboardSettings;
-import net.notfab.lindsey.shared.repositories.sql.BetterEmbedSettingsRepository;
-import net.notfab.lindsey.shared.repositories.sql.ServerProfileRepository;
-import net.notfab.lindsey.shared.repositories.sql.server.MusicSettingsRepository;
-import net.notfab.lindsey.shared.repositories.sql.server.StarboardSettingsRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,19 +16,16 @@ import org.springframework.stereotype.Service;
 public class ServerSettingsService {
 
     private final ServerProfileRepository settingsRepository;
-    private final MusicSettingsRepository musicRepository;
     private final StarboardSettingsRepository starboardRepository;
     private final BetterEmbedSettingsRepository embedsRepository;
     private final StringRedisTemplate redis;
     private final AuditLogService audit;
 
     public ServerSettingsService(ServerProfileRepository settingsRepository,
-                                 MusicSettingsRepository musicRepository,
                                  StarboardSettingsRepository starboardRepository,
                                  BetterEmbedSettingsRepository embedsRepository,
                                  StringRedisTemplate redis, AuditLogService audit) {
         this.settingsRepository = settingsRepository;
-        this.musicRepository = musicRepository;
         this.starboardRepository = starboardRepository;
         this.embedsRepository = embedsRepository;
         this.redis = redis;
@@ -71,22 +66,6 @@ public class ServerSettingsService {
         ServerProfile response = this.settingsRepository.save(request);
         response.setIgnoredChannels(request.getIgnoredChannels());
         return response;
-    }
-
-    public MusicSettings fetchMusic(long guild) {
-        return this.musicRepository.findById(guild).orElse(new MusicSettings(guild));
-    }
-
-    public MusicSettings putMusic(long guild, MusicSettings request) {
-        if (request.getLogChannel() == null) {
-            request.setLogTracks(false);
-        } else if (!request.isLogTracks()) {
-            request.setLogChannel(null);
-        }
-        MusicSettings old = this.fetchMusic(guild);
-        request.setPosition(old.getPosition());
-        request.setGuild(guild);
-        return this.musicRepository.save(request);
     }
 
     public StarboardSettings fetchStarboard(long guild) {

@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.lindseybot.enums.AutoModFeature;
+import net.notfab.lindsey.api.repositories.sql.AntiAdRepository;
 import net.notfab.lindsey.api.repositories.sql.AutoModRepository;
 import net.notfab.lindsey.shared.entities.profile.server.AntiAd;
 import net.notfab.lindsey.shared.entities.profile.server.AutoModSettings;
-import net.notfab.lindsey.shared.repositories.sql.server.AntiAdRepository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 

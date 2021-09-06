@@ -1,9 +1,9 @@
 package net.notfab.lindsey.api.advice.security;
 
 import net.notfab.lindsey.api.models.DiscordUser;
+import net.notfab.lindsey.api.repositories.sql.PanelAccessRepository;
 import net.notfab.lindsey.shared.entities.panel.AccessLevel;
 import net.notfab.lindsey.shared.entities.panel.PanelAccess;
-import net.notfab.lindsey.shared.repositories.sql.PanelAccessRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
