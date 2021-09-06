@@ -7,6 +7,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import net.notfab.lindsey.api.advice.RestfulErrorAdviser;
 import net.notfab.lindsey.api.models.DiscordUser;
 import net.notfab.lindsey.api.spring.SecurityService;
@@ -52,7 +53,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 return;
             }
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (MalformedJwtException | ExpiredJwtException | BadCredentialsException ex) {
+        } catch (SignatureException | MalformedJwtException | ExpiredJwtException | BadCredentialsException ex) {
             RestfulErrorAdviser.handleFilterException(res, ex, 401);
             return;
         }

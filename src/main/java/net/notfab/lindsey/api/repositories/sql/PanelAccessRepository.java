@@ -12,6 +12,6 @@ public interface PanelAccessRepository extends JpaRepository<PanelAccess, Long> 
 
     List<PanelAccess> findAllByGuild(long guild);
 
-    Optional<PanelAccess> findAllByUser(Long id);
+    List<PanelAccess> findAllByUser(Long id);
 
 }
