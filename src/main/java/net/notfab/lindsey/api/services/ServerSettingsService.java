@@ -44,17 +44,6 @@ public class ServerSettingsService {
     }
 
     public ServerProfile putSettings(long guild, ServerProfile request) {
-        if (request.getLanguage() == null) {
-            throw new IllegalArgumentException("Invalid language");
-        }
-        if (request.getPrefix() != null) {
-            if (request.getPrefix().contains(" ")) {
-                throw new IllegalArgumentException("Invalid prefix");
-            }
-            if (request.getPrefix().isBlank() || request.getPrefix().equals("L!")) {
-                request.setPrefix(null);
-            }
-        }
         if (request.getIgnoredChannels() != null) {
             String ignoredKey = "Lindsey:Ignore:" + guild;
             redis.delete(ignoredKey);
