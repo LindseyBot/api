@@ -37,6 +37,8 @@ public class LeaderboardRest {
         response.setLimit(page.getPageable().getPageSize());
         response.setPage(page.getNumber());
         response.setLast(page.isLast());
+        response.setTotal(page.getTotalElements());
+        response.setTotalPages(page.getTotalPages());
         response.setItems(page.stream().map((profile) -> this.toEntry(profile, type)).collect(Collectors.toList()));
         return response;
     }

@@ -13,6 +13,8 @@ public class PagedResponse<T> {
     private int page;
     private int limit;
     private boolean last;
+    private long total;
+    private long totalPages;
 
     private List<T> items;
 
@@ -21,6 +23,8 @@ public class PagedResponse<T> {
         this.limit = page.getPageable().getPageSize();
         this.last = page.isLast();
         this.items = page.getContent();
+        this.total = page.getTotalElements();
+        this.totalPages = page.getTotalPages();
     }
 
     public static <T> PagedResponse<T> ofUnpaged(List<T> items) {
